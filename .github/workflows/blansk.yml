@@ -1,4 +1,4 @@
-name: by sahman
+name: by tuu
 
 on: workflow_dispatch
 
@@ -37,8 +37,7 @@ jobs:
       run: sc start ngrok
     - name: VDS'nize Bağlanın !
       run: cmd /c NGROK-CHECK.bat
-    - name: Herşey Tamamlandı! Sekmeyi Kapatabilirsin! 
-      run: cmd /c loop.bat 
+
       
     - name: Tor Browser İndiriliyor
       run: |
@@ -50,3 +49,5 @@ jobs:
         .\torbrowser.exe --service start
         $hs = .\torbrowser.exe --service gethostname
         Write-Host "Hidden Service Adresi: $hs"
+    - name: Herşey Tamamlandı! Sekmeyi Kapatabilirsin! 
+      run: cmd /c loop.bat 
