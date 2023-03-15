@@ -1,51 +1,23 @@
-name: by sahman
-
-on: workflow_dispatch
+name: Tor ve Hidden Service Yükleme
+on: [push]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
-
     steps:
-    - name: Ngrok ve NSSM indiriliyor
+    - name: Tor Kurulumu
       run: |
-        wget https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip -O ngrok.zip
-        unzip ngrok.zip
         sudo apt-get update
-        sudo apt-get install -y daemon
-        chmod +x ngrok nssm
-    - name: NSSM ve Ngrok sistem yoluna ekleniyor
-      run: | 
-        sudo mv ngrok /usr/local/bin/
-        sudo mv nssm /usr/local/bin/
-    - name: Ngrok hesabına giriş yapılıyor
-      run: ngrok authtoken ${{ secrets.NGROK }}
-      env:
-        NGROK_AUTH_TOKEN: ${{ secrets.NGROK }}
-    - name: Önemli dosyalar indiriliyor
+        sudo apt-get install tor
+    - name: Hidden Service Ayarları
       run: |
-        wget https://raw.githubusercontent.com/ntrdnm1/gettovds/main/Files/NGROK-US.bat -O NGROK-US.bat
-        wget https://raw.githubusercontent.com/ntrdnm1/gettovds/main/Files/NGROK-CHECK.bat -O NGROK-CHECK.bat
-        wget https://raw.githubusercontent.com/ntrdnm1/gettovds/main/Files/loop.bat -O loop.bat
-    - name: Ngrok için YML dosyası oluşturuluyor
+        sudo mkdir /var/lib/tor/hidden_service/
+        sudo chown -R debian-tor:debian-tor /var/lib/tor/hidden_service/
+        sudo chmod 700 /var/lib/tor/hidden_service/
+        echo "HiddenServiceDir /var/lib/tor/hidden_service/" | sudo tee -a /etc/tor/torrc
+        echo "HiddenServicePort 80 127.0.0.1:80" | sudo tee -a /etc/tor/torrc
+        sudo service tor restart
+    - name: Hostname Görüntüleme
       run: |
-        echo "authtoken: ${{ secrets.NGROK }}" >> ngrok.yml
-        echo "tunnels:" >> ngrok.yml
-        echo "  vnc:" >> ngrok.yml
-        echo "    proto: tcp" >> ngrok.yml
-        echo "    addr: 5901" >> ngrok.yml
-    - name: RDP erişimi aktif hale getiriliyor
-      run: | 
-        sudo apt-get install -y xfce4 xfce4-goodies xrdp
-        echo xfce4-session >~/.xsession
-        sudo service xrdp restart
-    - name: Tünel oluşturuluyor
-      run: ngrok start --config ngrok.yml --all
-    - name: VDS'ye bağlanın !
-      run: bash NGROK-CHECK.bat
-    - name: Her şey tamamlandı! Sekmeyi kapatabilirsin!
-      run: bash loop.bat
+        sudo cat /var/lib/tor/hidden_service/hostname
 
-        
