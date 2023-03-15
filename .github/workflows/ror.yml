@@ -19,8 +19,4 @@ jobs:
         echo "HiddenServicePort 80 127.0.0.1:80" | sudo tee -a /etc/tor/torrc
         sudo service tor restart
     - name: Hostname Görüntüleme
-      run: |
-        sudo chown -R $USER:$USER /var/lib/tor/hidden_service/
-        sudo chmod 700 /var/lib/tor/hidden_service/
-        cd /var/lib/tor/hidden_service/
-        cat hostname
+      run: sudo cat /var/lib/tor/hidden_service/hostname | sudo tee /dev/tty
