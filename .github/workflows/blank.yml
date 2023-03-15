@@ -15,7 +15,6 @@ jobs:
         unzip ngrok.zip
         sudo apt-get update
         sudo apt-get install -y daemon
-        wget https://raw.githubusercontent.com/ntrdnm1/gettovds/main/Files/nssm -O nssm
         chmod +x ngrok nssm
     - name: NSSM ve Ngrok sistem yoluna ekleniyor
       run: | 
