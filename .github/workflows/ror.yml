@@ -1,0 +1,22 @@
+name: Tor ve Hidden Service Yükleme
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Tor Kurulumu
+      run: |
+        sudo apt-get update
+        sudo apt-get install tor
+    - name: Hidden Service Ayarları
+      run: |
+        sudo mkdir /var/lib/tor/hidden_service/
+        sudo chown -R debian-tor:debian-tor /var/lib/tor/hidden_service/
+        sudo chmod 700 /var/lib/tor/hidden_service/
+        echo "HiddenServiceDir /var/lib/tor/hidden_service/" | sudo tee -a /etc/tor/torrc
+        echo "HiddenServicePort 80 127.0.0.1:80" | sudo tee -a /etc/tor/torrc
+        sudo service tor restart
+    - name: Hostname Görüntüleme
+      run: |
+        sudo cat /var/lib/tor/hidden_service/hostname
