@@ -19,4 +19,5 @@ jobs:
         sudo service tor restart
     - name: Hostname Görüntüleme
       run: |
-        sudo cat /var/lib/tor/hidden_service/hostname
+        sudo cat /etc/tor/hidden_service/hostname
+
