@@ -12,11 +12,12 @@ jobs:
       - uses: actions/checkout@v2
       
       # Talisos işletim sistemini çalıştırma
-      - name: Start Talisos
-        run: |
-          docker run -d --name talisos talisto/talisos
-          docker exec -it talisos /bin/bash
-          
+      - name: Start Tails
+      run: |
+        docker run -d --name tails tailscale/tailscale
+        sleep 10s
+        docker exec -it tails /bin/bash -c "tailscale up"
+
       # Ngrok yüklemek ve çalıştırmak
       - name: Install Ngrok and Connect
         run: |
