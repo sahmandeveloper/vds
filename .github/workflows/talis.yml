@@ -1,0 +1,35 @@
+name: Talisos and Ngrok
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      
+      # Talisos işletim sistemini çalıştırma
+      - name: Start Talisos
+        run: |
+          docker run -d --name talisos talisto/talisos
+          docker exec -it talisos /bin/bash
+          
+      # Ngrok yüklemek ve çalıştırmak
+      - name: Install Ngrok and Connect
+        run: |
+          curl https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip -LOk
+          unzip ngrok-stable-linux-amd64.zip
+          ./ngrok authtoken $Env:NGROK_AUTH_TOKEN
+          ./ngrok tcp 22
+          
+      # SSH ile bağlanma
+      - name: Connect via SSH
+        uses: appleboy/ssh-action@master
+        with:
+          host: localhost
+          username: root
+          password: root
+          port: ${{ job.services.ngrok.ports['22'] }}
